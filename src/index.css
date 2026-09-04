@@ -1,0 +1,36 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #f9fafb;
+  color: #1f2933;
+}
+
+/* A visible, high-contrast focus ring everywhere by default. Individual
+   components may customize this (see ComboboxFilter / OpportunityTable),
+   but nothing in this app relies on the browser's default (often faint)
+   focus indicator, and nothing suppresses focus outlines outright. */
+:focus-visible {
+  outline: 3px solid #1a5fb4;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
