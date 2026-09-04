@@ -27,6 +27,39 @@ components carry the interesting work:
   region announces what changed and how many results remain after every
   sort or filter action.
 
+## Accessibility approach
+
+This project treats accessibility as part of the interaction model, not a final
+checklist. A few concrete choices matter here:
+
+- Full keyboard-only flow: every control is reachable without a mouse,
+  including the combobox, listbox options, sort buttons, and row links.
+- Screen-reader feedback: live regions announce sort changes and result counts so
+  state changes are not silent.
+- Focus management: skip links, heading focus on detail pages, and row focus
+  restoration keep users oriented when moving through the app.
+- The table uses semantic HTML and ARIA state: real buttons, real links, real
+  table semantics, and `aria-sort` on the active column.
+- Focus styles are consistently visible and contrasted against the background to
+  remain obvious without being decorative.
+
+## Built with AI assistance — and where I overrode it
+
+AI was useful for scaffolding the first pass of the combobox, table, and routing
+patterns, and for getting the component structure in place quickly.
+
+First important override was semantic correctness. A naive version of this UI could
+have looked right but still been a poor keyboard or screen-reader experience. 
+
+After that I changed the interaction logic so:
+
+- the selected filter value and the typed query remain distinct,
+- the popup closes at the right time,
+- focus is restored after navigation,
+- and the URL state is validated instead of trusting raw query params.
+
+These make the real difference between “it renders” and “it behaves well for a user.”
+
 ## Significant changes along the way, and why they were needed
 
 Improvements focused on the practical product problems that matter most in a
@@ -79,39 +112,6 @@ from one-off literals into a small shared design system:
 This isn't about accessibility itself, it's about making the accessible styling
 choices (contrast, focus-ring shape/offset) impossible to accidentally drift out
 of sync as the app grows.
-
-## Accessibility approach
-
-This project treats accessibility as part of the interaction model, not a final
-checklist. A few concrete choices matter here:
-
-- Full keyboard-only flow: every control is reachable without a mouse,
-  including the combobox, listbox options, sort buttons, and row links.
-- Screen-reader feedback: live regions announce sort changes and result counts so
-  state changes are not silent.
-- Focus management: skip links, heading focus on detail pages, and row focus
-  restoration keep users oriented when moving through the app.
-- The table uses semantic HTML and ARIA state: real buttons, real links, real
-  table semantics, and `aria-sort` on the active column.
-- Focus styles are consistently visible and contrasted against the background to
-  remain obvious without being decorative.
-
-## Built with AI assistance — and where I overrode it
-
-AI was useful for scaffolding the first pass of the combobox, table, and routing
-patterns, and for getting the component structure in place quickly.
-
-The important override was semantic correctness. A naive version of this UI could
-have looked right but still been a poor keyboard or screen-reader experience. 
-
-I changed the interaction logic so:
-
-- the selected filter value and the typed query remain distinct,
-- the popup closes at the right time,
-- focus is restored after navigation,
-- and the URL state is validated instead of trusting raw query params.
-
-These make the real difference between “it renders” and “it behaves well for a user.”
 
 ## Running locally
 
