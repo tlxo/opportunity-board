@@ -1,3 +1,4 @@
+import { useRef, useState, type KeyboardEvent } from "react";
 import styled from "styled-components";
 import type { Opportunity, SortDirection, SortKey, SortState } from "../types";
 
@@ -60,6 +61,13 @@ const Td = styled.td`
   padding: 0.65rem 0.85rem;
   border-bottom: 1px solid #e4e9ec;
   color: #1f2933;
+`;
+
+const Row = styled.tr`
+  &:focus-visible {
+    outline: 3px solid #1a5fb4;
+    outline-offset: -3px;
+  }
 `;
 
 const TagList = styled.ul`
@@ -147,11 +155,44 @@ function formatDate(iso: string): string {
  * same feedback as sighted users watching the icon flip.
  */
 export function OpportunityTable({ opportunities, sort, onSortChange }: OpportunityTableProps) {
+  const [activeRow, setActiveRow] = useState(0);
+  const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
+
   function handleSort(key: SortKey) {
     if (sort.key === key) {
       onSortChange({ key, direction: nextDirection(sort.direction) });
     } else {
       onSortChange({ key, direction: "ascending" });
+    }
+  }
+
+  // Roving tabindex: only one row is tab-stoppable at a time, arrows move between rows
+  const effectiveActiveRow = Math.min(activeRow, Math.max(0, opportunities.length - 1));
+
+  function focusRow(index: number) {
+    const clamped = Math.max(0, Math.min(opportunities.length - 1, index));
+    setActiveRow(clamped);
+    rowRefs.current[clamped]?.focus();
+  }
+
+  function handleRowKeyDown(event: KeyboardEvent<HTMLTableRowElement>, index: number) {
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        focusRow(index + 1);
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        focusRow(index - 1);
+        break;
+      case "Home":
+        event.preventDefault();
+        focusRow(0);
+        break;
+      case "End":
+        event.preventDefault();
+        focusRow(opportunities.length - 1);
+        break;
     }
   }
 
@@ -191,8 +232,16 @@ export function OpportunityTable({ opportunities, sort, onSortChange }: Opportun
           </tr>
         </thead>
         <tbody>
-          {opportunities.map((op) => (
-            <tr key={op.id}>
+          {opportunities.map((op, index) => (
+            <Row
+              key={op.id}
+              ref={(el) => {
+                rowRefs.current[index] = el;
+              }}
+              tabIndex={index === effectiveActiveRow ? 0 : -1}
+              onKeyDown={(event) => handleRowKeyDown(event, index)}
+              onFocus={() => setActiveRow(index)}
+            >
               <Td>{op.title}</Td>
               <Td>{op.team}</Td>
               <Td>{op.location}</Td>
@@ -207,7 +256,7 @@ export function OpportunityTable({ opportunities, sort, onSortChange }: Opportun
                   ))}
                 </TagList>
               </Td>
-            </tr>
+            </Row>
           ))}
         </tbody>
       </Table>
