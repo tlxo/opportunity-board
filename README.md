@@ -7,7 +7,8 @@ styled-components — no UI kit, no headless-component library — so every
 accessibility decision below is one I made deliberately, not one a library
 made for me.
 
-**[Live demo](https://opportunity-board.netlify.app/)** [![Netlify Status](https://api.netlify.com/api/v1/badges/24af0b4e-02f9-43a0-b64e-84f78c623cbd/deploy-status)](https://app.netlify.com/projects/opportunity-board/deploys)  
+**[Live demo](https://opportunity-board.netlify.app/)**  
+[![Netlify Status](https://api.netlify.com/api/v1/badges/24af0b4e-02f9-43a0-b64e-84f78c623cbd/deploy-status)](https://app.netlify.com/projects/opportunity-board/deploys)  
 
 ## What it is
 
