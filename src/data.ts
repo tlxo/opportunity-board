@@ -10,6 +10,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Senior",
     tags: ["React", "TypeScript", "Accessibility", "Figma"],
     postedDate: "2026-08-28",
+    employmentType: "Full-time",
+    description:
+      "Sit between design and engineering, turning interface concepts into a production component library that holds up under real assistive technology.",
+    responsibilities: [
+      "Own the shared component library and its accessibility documentation",
+      "Prototype interaction patterns and validate them with users",
+      "Pair with designers to keep Figma tokens and code in sync",
+    ],
+    contact: "design-hiring@example.com",
   },
   {
     id: "op-2",
@@ -19,6 +28,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Lead",
     tags: ["WCAG", "Auditing", "Training"],
     postedDate: "2026-08-12",
+    employmentType: "Full-time",
+    description:
+      "Advise client teams on meeting WCAG 2.2 AA, from early design review through to remediation and sign-off.",
+    responsibilities: [
+      "Run audits and write findings that developers can act on directly",
+      "Facilitate training for design, engineering and content teams",
+      "Support procurement and accessibility statement work",
+    ],
+    contact: "advisory@example.com",
   },
   {
     id: "op-3",
@@ -28,6 +46,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Mid",
     tags: ["React", "TypeScript", "Testing"],
     postedDate: "2026-09-01",
+    employmentType: "Full-time",
+    description:
+      "Build and maintain the internal platform UI that other product teams depend on every day.",
+    responsibilities: [
+      "Ship features in a React and TypeScript codebase",
+      "Grow the automated test suite alongside the code it covers",
+      "Review pull requests and help keep the build fast",
+    ],
+    contact: "platform-hiring@example.com",
   },
   {
     id: "op-4",
@@ -37,6 +64,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Senior",
     tags: ["Research", "Workshops", "Journeys"],
     postedDate: "2026-07-30",
+    employmentType: "Full-time",
+    description:
+      "Map end-to-end service journeys across digital and non-digital touchpoints, then help teams act on what the map reveals.",
+    responsibilities: [
+      "Plan and facilitate co-design workshops with stakeholders",
+      "Produce journey maps and service blueprints",
+      "Translate research findings into concrete design direction",
+    ],
+    contact: "design-hiring@example.com",
   },
   {
     id: "op-5",
@@ -46,6 +82,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Lead",
     tags: ["Integration", "MCP", "AI Tooling"],
     postedDate: "2026-08-20",
+    employmentType: "Full-time",
+    description:
+      "Shape the technical approach for client integrations, with a focus on AI tooling and Model Context Protocol servers.",
+    responsibilities: [
+      "Design integration architectures and document the trade-offs",
+      "Prototype MCP servers and evaluate vendor tooling",
+      "Support delivery teams through implementation",
+    ],
+    contact: "delivery@example.com",
   },
   {
     id: "op-6",
@@ -55,6 +100,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Mid",
     tags: ["Usability Testing", "Interviews"],
     postedDate: "2026-08-05",
+    employmentType: "Full-time",
+    description:
+      "Run continuous discovery for two product teams, including usability sessions with participants who use assistive technology.",
+    responsibilities: [
+      "Recruit participants and moderate usability sessions",
+      "Synthesise interview findings into actionable insight",
+      "Maintain a shared research repository",
+    ],
+    contact: "research@example.com",
   },
   {
     id: "op-7",
@@ -64,6 +118,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Junior",
     tags: ["React", "CSS", "Learning"],
     postedDate: "2026-09-02",
+    employmentType: "Full-time, with mentoring",
+    description:
+      "A first developer role with structured mentoring, paired work and dedicated learning time each week.",
+    responsibilities: [
+      "Implement UI features with guidance from a mentor",
+      "Write and maintain component-level tests",
+      "Take part in code review as both author and reviewer",
+    ],
+    contact: "platform-hiring@example.com",
   },
   {
     id: "op-8",
@@ -73,6 +136,15 @@ export const opportunities: Opportunity[] = [
     seniority: "Senior",
     tags: ["WCAG", "React", "Automated Testing"],
     postedDate: "2026-08-15",
+    employmentType: "Full-time",
+    description:
+      "Own accessibility as an engineering concern: tooling, CI checks, and the hard fixes that automated tests cannot catch.",
+    responsibilities: [
+      "Build accessibility checks into the CI pipeline",
+      "Remediate complex ARIA and keyboard interaction issues",
+      "Coach engineers on testing with screen readers",
+    ],
+    contact: "platform-hiring@example.com",
   },
 ];
 

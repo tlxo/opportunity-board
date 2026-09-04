@@ -1,6 +1,8 @@
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import styled from "styled-components";
 import type { Opportunity, SortDirection, SortKey, SortState } from "../types";
+import { Link } from "../router";
+import { VisuallyHidden } from "./VisuallyHidden";
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -70,6 +72,18 @@ const Row = styled.tr`
   }
 `;
 
+const TitleLink = styled(Link)`
+  color: #1a5fb4;
+  font-weight: 600;
+  text-decoration: underline;
+
+  &:focus-visible {
+    outline: 3px solid #1a5fb4;
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+`;
+
 const TagList = styled.ul`
   display: flex;
   flex-wrap: wrap;
@@ -85,18 +99,6 @@ const Tag = styled.li`
   font-size: 0.78rem;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
-`;
-
-const VisuallyHidden = styled.span`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 `;
 
 const EmptyState = styled.p`
@@ -134,6 +136,10 @@ interface OpportunityTableProps {
   opportunities: Opportunity[];
   sort: SortState;
   onSortChange: (sort: SortState) => void;
+  /** Detail page we just returned from; its row link regains focus. */
+  focusOpportunityId?: string | null;
+  onFocusRestored?: () => void;
+  detailHref: (opportunity: Opportunity) => string;
 }
 
 function nextDirection(current: SortDirection): SortDirection {
@@ -154,9 +160,17 @@ function formatDate(iso: string): string {
  * through a visually-hidden aria-live region so screen reader users get the
  * same feedback as sighted users watching the icon flip.
  */
-export function OpportunityTable({ opportunities, sort, onSortChange }: OpportunityTableProps) {
+export function OpportunityTable({
+  opportunities,
+  sort,
+  onSortChange,
+  focusOpportunityId,
+  onFocusRestored,
+  detailHref,
+}: OpportunityTableProps) {
   const [activeRow, setActiveRow] = useState(0);
-  const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
+  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  linkRefs.current.length = opportunities.length;
 
   function handleSort(key: SortKey) {
     if (sort.key === key) {
@@ -166,14 +180,24 @@ export function OpportunityTable({ opportunities, sort, onSortChange }: Opportun
     }
   }
 
-  // Roving tabindex: only one row is tab-stoppable at a time, arrows move between rows
+  // Roving tabindex: one row link is tab-stoppable at a time, arrows move between rows
   const effectiveActiveRow = Math.min(activeRow, Math.max(0, opportunities.length - 1));
 
   function focusRow(index: number) {
     const clamped = Math.max(0, Math.min(opportunities.length - 1, index));
     setActiveRow(clamped);
-    rowRefs.current[clamped]?.focus();
+    linkRefs.current[clamped]?.focus();
   }
+
+  useEffect(() => {
+    if (!focusOpportunityId) return;
+    const index = opportunities.findIndex((o) => o.id === focusOpportunityId);
+    // The row may have been filtered out in the meantime; fall back to the first one.
+    const target = index >= 0 ? index : 0;
+    setActiveRow(target);
+    linkRefs.current[target]?.focus();
+    onFocusRestored?.();
+  }, [focusOpportunityId, opportunities, onFocusRestored]);
 
   function handleRowKeyDown(event: KeyboardEvent<HTMLTableRowElement>, index: number) {
     switch (event.key) {
@@ -235,14 +259,20 @@ export function OpportunityTable({ opportunities, sort, onSortChange }: Opportun
           {opportunities.map((op, index) => (
             <Row
               key={op.id}
-              ref={(el) => {
-                rowRefs.current[index] = el;
-              }}
-              tabIndex={index === effectiveActiveRow ? 0 : -1}
               onKeyDown={(event) => handleRowKeyDown(event, index)}
               onFocus={() => setActiveRow(index)}
             >
-              <Td>{op.title}</Td>
+              <Td>
+                <TitleLink
+                  ref={(el: HTMLAnchorElement | null) => {
+                    linkRefs.current[index] = el;
+                  }}
+                  to={detailHref(op)}
+                  tabIndex={index === effectiveActiveRow ? 0 : -1}
+                >
+                  {op.title}
+                </TitleLink>
+              </Td>
               <Td>{op.team}</Td>
               <Td>{op.location}</Td>
               <Td>{op.seniority}</Td>

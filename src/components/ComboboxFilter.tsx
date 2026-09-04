@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import styled from "styled-components";
+import { VisuallyHidden } from "./VisuallyHidden";
 
 const Wrapper = styled.div`
   position: relative;
@@ -80,18 +81,6 @@ const Option = styled.li<{ $active: boolean }>`
   }
 `;
 
-const VisuallyHidden = styled.span`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-`;
-
 interface ComboboxFilterProps {
   label: string;
   options: string[];
@@ -120,6 +109,12 @@ export function ComboboxFilter({ label, options, value, onChange }: ComboboxFilt
   const inputId = `${baseId}-input`;
   const listboxId = `${baseId}-listbox`;
   const optionId = (index: number) => `${baseId}-option-${index}`;
+
+  // Adopt a selection made elsewhere (e.g. restored from the URL) without
+  // overwriting a partially typed query, which arrives here as value === null.
+  useEffect(() => {
+    if (value !== null) setQuery(value);
+  }, [value]);
 
   // aria-activedescendant doesn't move DOM focus, so the browser won't scroll for us
   useEffect(() => {

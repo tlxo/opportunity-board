@@ -6,6 +6,10 @@ export interface Opportunity {
   seniority: "Junior" | "Mid" | "Senior" | "Lead";
   tags: string[];
   postedDate: string; // ISO date
+  employmentType: string;
+  description: string;
+  responsibilities: string[];
+  contact: string;
 }
 
 export type SortKey = "title" | "team" | "location" | "seniority" | "postedDate";

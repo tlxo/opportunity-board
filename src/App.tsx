@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { allTags, opportunities } from "./data";
-import type { SortState } from "./types";
-import { ComboboxFilter } from "./components/ComboboxFilter";
-import { OpportunityTable } from "./components/OpportunityTable";
+import { opportunities } from "./data";
+import { parseListState, serializeListState, type ListState } from "./listState";
+import { navigate, useLocation } from "./router";
+import { VisuallyHidden } from "./components/VisuallyHidden";
+import { OpportunityListPage } from "./pages/OpportunityListPage";
+import { OpportunityDetailPage } from "./pages/OpportunityDetailPage";
 
 const Page = styled.div`
   max-width: 960px;
@@ -43,43 +45,46 @@ const Subtitle = styled.p`
   max-width: 60ch;
 `;
 
-const Toolbar = styled.div`
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-`;
+const detailPattern = /^\/opportunities\/([\w-]+)\/?$/;
 
-const ResultCount = styled.p`
-  margin: 0;
-  color: #52606d;
-  font-size: 0.9rem;
-`;
- 
+function matchDetailId(pathname: string): string | null {
+  return detailPattern.exec(pathname)?.[1] ?? null;
+}
+
 export default function App() {
-  const [tagFilter, setTagFilter] = useState<string | null>(null);
-  const [sort, setSort] = useState<SortState>({ key: "postedDate", direction: "descending" });
+  const { pathname, search } = useLocation();
+  const detailId = matchDetailId(pathname);
+  const listState = parseListState(search);
 
-  const filtered = useMemo(() => {
-    const base = tagFilter
-      ? opportunities.filter((o) => o.tags.includes(tagFilter))
-      : opportunities;
+  const [focusOpportunityId, setFocusOpportunityId] = useState<string | null>(null);
+  const previousDetailId = useRef<string | null>(detailId);
 
-    const sorted = [...base].sort((a, b) => {
-      const aVal = a[sort.key];
-      const bVal = b[sort.key];
-      const comparison = aVal.localeCompare(bVal);
-      return sort.direction === "ascending" ? comparison : -comparison;
-    });
+  // Any detail -> list transition hands focus back, whether it came from the back
+  // link, the browser back button or a swipe gesture.
+  useEffect(() => {
+    if (previousDetailId.current && !detailId) {
+      setFocusOpportunityId(previousDetailId.current);
+    }
+    previousDetailId.current = detailId;
+  }, [detailId]);
 
-    return sorted;
-  }, [tagFilter, sort]);
+  const opportunity = detailId ? opportunities.find((o) => o.id === detailId) : undefined;
+  const pageName = detailId ? (opportunity?.title ?? "Opportunity not found") : "Open opportunities";
+
+  useEffect(() => {
+    document.title = `${pageName} \u2014 Opportunity Board`;
+  }, [pageName]);
+
+  // replace: filter and sort tweaks should not pile up in the back stack.
+  const handleListStateChange = useCallback((next: ListState) => {
+    navigate(`/${serializeListState(next)}`, { replace: true });
+  }, []);
+
+  const handleFocusRestored = useCallback(() => setFocusOpportunityId(null), []);
 
   return (
     <>
-      <SkipLink href="#main">Skip to opportunities</SkipLink>
+      <SkipLink href="#main">Skip to content</SkipLink>
       <Page>
         <Header>
           <Title>Open Opportunities</Title>
@@ -92,21 +97,22 @@ export default function App() {
         </Header>
 
         <main id="main">
-          <Toolbar>
-            <ComboboxFilter
-              label="Filter by tag"
-              options={allTags}
-              value={tagFilter}
-              onChange={setTagFilter}
+          {detailId ? (
+            <OpportunityDetailPage id={detailId} backHref={`/${search}`} />
+          ) : (
+            <OpportunityListPage
+              listState={listState}
+              onListStateChange={handleListStateChange}
+              focusOpportunityId={focusOpportunityId}
+              onFocusRestored={handleFocusRestored}
             />
-            <ResultCount>
-              Showing {filtered.length} of {opportunities.length} opportunities
-            </ResultCount>
-          </Toolbar>
-
-          <OpportunityTable opportunities={filtered} sort={sort} onSortChange={setSort} />
+          )}
         </main>
       </Page>
+
+      <VisuallyHidden role="status" aria-live="polite">
+        {pageName}
+      </VisuallyHidden>
     </>
   );
 }
