@@ -5,8 +5,13 @@ const TableWrapper = styled.div`
   overflow-x: auto;
   border: 1px solid #d3dae0;
   border-radius: 8px;
-`;
 
+  &:focus-visible {
+    outline: 3px solid #1a5fb4;
+    outline-offset: 2px;
+  }
+`;
+ 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -158,7 +163,8 @@ export function OpportunityTable({ opportunities, sort, onSortChange }: Opportun
     : "";
 
   return (
-    <TableWrapper>
+    // tabIndex: the wrapper scrolls horizontally, so it must be reachable by keyboard
+    <TableWrapper role="region" aria-label="Open opportunities" tabIndex={0}>
       <Table>
         <VisuallyHiddenCaption>
           Open opportunities, sortable by role, team, location, seniority, or date posted

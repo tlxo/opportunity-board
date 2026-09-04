@@ -57,7 +57,7 @@ const ResultCount = styled.p`
   color: #52606d;
   font-size: 0.9rem;
 `;
-
+ 
 export default function App() {
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [sort, setSort] = useState<SortState>({ key: "postedDate", direction: "descending" });
