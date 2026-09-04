@@ -57,6 +57,29 @@ keyboard navigation feel consistent rather than fragile.
   semantic HTML. The goal was to make the app usable without a mouse and not just
   look correct at a glance.
 
+## Design system foundations
+
+Separate from the accessibility work, the styled-components usage was refactored
+from one-off literals into a small shared design system:
+
+- **A single theme object** (`src/theme.ts`) holds every color, radius, and the
+  `focusRing()` mixin, wired in via styled-components' `ThemeProvider`. Colors like
+  the brand blue used for links and focus rings previously appeared as the literal
+  `#1a5fb4` independently in four different files; now every component reads
+  `theme.color.link`.
+- **Typed theme access**: `src/styled.d.ts` augments styled-components'
+  `DefaultTheme`, so `props.theme.color.*` is type-checked and autocompletes
+  instead of relying on string literals matching by convention.
+- **Shared primitives** (`src/components/ui/`): `FocusableLink` and `Surface`
+  extract patterns that were being redefined per-file (a link with the app's
+  focus-ring treatment, a bordered/rounded card container). Feature components
+  like `TitleLink` and `Article` now compose from these rather than duplicating
+  the CSS.
+
+This isn't about accessibility itself, it's about making the accessible styling
+choices (contrast, focus-ring shape/offset) impossible to accidentally drift out
+of sync as the app grows.
+
 ## Accessibility approach
 
 This project treats accessibility as part of the interaction model, not a final

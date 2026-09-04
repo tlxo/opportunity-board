@@ -1,25 +1,17 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { opportunities } from "../data";
-import { Link } from "../router";
+import { FocusableLink } from "../components/ui/FocusableLink";
+import { Surface } from "../components/ui/Surface";
+import { focusRing } from "../theme";
 
-const BackLink = styled(Link)`
+const BackLink = styled(FocusableLink)`
   display: inline-block;
   margin-bottom: 1.25rem;
-  color: #1a5fb4;
-
-  &:focus-visible {
-    outline: 3px solid #1a5fb4;
-    outline-offset: 2px;
-    border-radius: 3px;
-  }
 `;
 
-const Article = styled.article`
-  border: 1px solid #d3dae0;
-  border-radius: 8px;
+const Article = styled(Surface)`
   padding: 1.5rem;
-  background: #fff;
 `;
 
 const Heading = styled.h2`
@@ -27,13 +19,12 @@ const Heading = styled.h2`
   margin: 0 0 0.75rem;
 
   &:focus-visible {
-    outline: 3px solid #1a5fb4;
-    outline-offset: 4px;
+    ${focusRing("4px")}
   }
 `;
 
 const Lead = styled.p`
-  color: #3e4c59;
+  color: ${({ theme }) => theme.color.textSubtle};
   max-width: 65ch;
   margin: 0 0 1.5rem;
 `;
@@ -46,7 +37,7 @@ const Facts = styled.dl`
 
   dt {
     font-weight: 600;
-    color: #52606d;
+    color: ${({ theme }) => theme.color.textMuted};
   }
 
   dd {
@@ -62,7 +53,7 @@ const SubHeading = styled.h3`
 const List = styled.ul`
   margin: 0 0 1.5rem;
   padding-left: 1.25rem;
-  color: #3e4c59;
+  color: ${({ theme }) => theme.color.textSubtle};
 
   li {
     margin-bottom: 0.35rem;
@@ -79,11 +70,11 @@ const TagList = styled.ul`
 `;
 
 const Tag = styled.li`
-  background: #e4edf7;
-  color: #1a5fb4;
+  background: ${({ theme }) => theme.color.linkTint};
+  color: ${({ theme }) => theme.color.link};
   font-size: 0.78rem;
   padding: 0.15rem 0.5rem;
-  border-radius: 999px;
+  border-radius: ${({ theme }) => theme.radius.pill};
 `;
 
 function formatDate(iso: string): string {
@@ -112,7 +103,7 @@ export function OpportunityDetailPage({ id, backHref }: OpportunityDetailPagePro
     return (
       <>
         <BackLink to={backHref}>&larr; Back to all opportunities</BackLink>
-        <Article>
+        <Article as="article">
           <Heading ref={headingRef} tabIndex={-1}>
             Opportunity not found
           </Heading>
@@ -125,7 +116,7 @@ export function OpportunityDetailPage({ id, backHref }: OpportunityDetailPagePro
   return (
     <>
       <BackLink to={backHref}>&larr; Back to all opportunities</BackLink>
-      <Article aria-labelledby="opportunity-heading">
+      <Article as="article" aria-labelledby="opportunity-heading">
         <Heading id="opportunity-heading" ref={headingRef} tabIndex={-1}>
           {opportunity.title}
         </Heading>

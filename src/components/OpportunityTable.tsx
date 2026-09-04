@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import styled from "styled-components";
 import type { Opportunity, SortDirection, SortKey, SortState } from "../types";
-import { Link } from "../router";
 import { VisuallyHidden } from "./VisuallyHidden";
+import { FocusableLink } from "./ui/FocusableLink";
+import { Surface } from "./ui/Surface";
+import { focusRing } from "../theme";
 
-const TableWrapper = styled.div`
+const TableWrapper = styled(Surface)`
   overflow-x: auto;
-  border: 1px solid #d3dae0;
-  border-radius: 8px;
 
   &:focus-visible {
-    outline: 3px solid #1a5fb4;
-    outline-offset: 2px;
+    ${focusRing()}
   }
 `;
  
@@ -24,8 +23,8 @@ const Table = styled.table`
 
 const Th = styled.th`
   text-align: left;
-  background: #f4f6f8;
-  border-bottom: 2px solid #d3dae0;
+  background: ${({ theme }) => theme.color.surfaceMuted};
+  border-bottom: 2px solid ${({ theme }) => theme.color.border};
   padding: 0;
 `;
 
@@ -39,49 +38,39 @@ const SortButton = styled.button`
   border: none;
   font: inherit;
   font-weight: 600;
-  color: #1f2933;
+  color: ${({ theme }) => theme.color.text};
   cursor: pointer;
   text-align: left;
 
   &:hover {
-    background: #e9edf1;
+    background: ${({ theme }) => theme.color.surfaceHover};
   }
 
   &:focus-visible {
-    outline: 3px solid #1a5fb4;
-    outline-offset: -3px;
+    ${focusRing("-3px")}
   }
 `;
 
 const SortIcon = styled.span`
   font-size: 0.75rem;
-  color: #52606d;
+  color: ${({ theme }) => theme.color.textMuted};
   /* aria-hidden — the accessible sort state lives on aria-sort, not this glyph */
 `;
 
 const Td = styled.td`
   padding: 0.65rem 0.85rem;
-  border-bottom: 1px solid #e4e9ec;
-  color: #1f2933;
+  border-bottom: 1px solid ${({ theme }) => theme.color.borderSubtle};
+  color: ${({ theme }) => theme.color.text};
 `;
 
 const Row = styled.tr`
   &:focus-visible {
-    outline: 3px solid #1a5fb4;
-    outline-offset: -3px;
+    ${focusRing("-3px")}
   }
 `;
 
-const TitleLink = styled(Link)`
-  color: #1a5fb4;
+const TitleLink = styled(FocusableLink)`
   font-weight: 600;
-  text-decoration: underline;
-
-  &:focus-visible {
-    outline: 3px solid #1a5fb4;
-    outline-offset: 2px;
-    border-radius: 3px;
-  }
 `;
 
 const TagList = styled.ul`
@@ -94,16 +83,16 @@ const TagList = styled.ul`
 `;
 
 const Tag = styled.li`
-  background: #e4edf7;
-  color: #1a5fb4;
+  background: ${({ theme }) => theme.color.linkTint};
+  color: ${({ theme }) => theme.color.link};
   font-size: 0.78rem;
   padding: 0.15rem 0.5rem;
-  border-radius: 999px;
+  border-radius: ${({ theme }) => theme.radius.pill};
 `;
 
 const EmptyState = styled.p`
   padding: 1.5rem;
-  color: #52606d;
+  color: ${({ theme }) => theme.color.textMuted};
   text-align: center;
 `;
 

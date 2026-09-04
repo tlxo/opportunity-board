@@ -11,17 +11,17 @@ const Page = styled.div`
   max-width: 960px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 4rem;
-  color: #1f2933;
+  color: ${({ theme }) => theme.color.text};
 `;
 
 const SkipLink = styled.a`
   position: absolute;
   left: -999px;
   top: auto;
-  background: #1a5fb4;
-  color: #fff;
+  background: ${({ theme }) => theme.color.link};
+  color: ${({ theme }) => theme.color.surface};
   padding: 0.6rem 1rem;
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radius.sm};
   z-index: 100;
 
   &:focus {
@@ -40,7 +40,7 @@ const Title = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  color: #52606d;
+  color: ${({ theme }) => theme.color.textMuted};
   margin: 0;
   max-width: 60ch;
 `;

@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import styled from "styled-components";
 import { VisuallyHidden } from "./VisuallyHidden";
+import { Surface } from "./ui/Surface";
 
 const Wrapper = styled.div`
   position: relative;
@@ -12,20 +13,19 @@ const Label = styled.label`
   font-weight: 600;
   font-size: 0.9rem;
   margin-bottom: 0.35rem;
-  color: #1f2933;
+  color: ${({ theme }) => theme.color.text};
 `;
 
-const InputRow = styled.div`
+const InputRow = styled(Surface)`
   display: flex;
   align-items: center;
-  border: 1px solid #b8c0c8;
-  border-radius: 6px;
-  background: #fff;
+  border-color: ${({ theme }) => theme.color.borderStrong};
+  border-radius: ${({ theme }) => theme.radius.sm};
 
   &:focus-within {
-    outline: 3px solid #1a5fb4;
+    outline: 3px solid ${({ theme }) => theme.color.link};
     outline-offset: 1px;
-    border-color: #1a5fb4;
+    border-color: ${({ theme }) => theme.color.link};
   }
 `;
 
@@ -34,7 +34,7 @@ const Input = styled.input`
   border: none;
   padding: 0.55rem 0.6rem;
   font-size: 0.95rem;
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.radius.sm};
   outline: none;
 `;
 
@@ -43,11 +43,11 @@ const ClearButton = styled.button`
   border: none;
   padding: 0 0.6rem;
   cursor: pointer;
-  color: #52606d;
+  color: ${({ theme }) => theme.color.textMuted};
   font-size: 0.85rem;
 
   &:focus-visible {
-    outline: 3px solid #1a5fb4;
+    outline: 3px solid ${({ theme }) => theme.color.link};
     outline-offset: 1px;
   }
 `;
@@ -63,21 +63,21 @@ const Listbox = styled.ul`
   margin: 0;
   padding: 0.25rem 0;
   list-style: none;
-  background: #fff;
-  border: 1px solid #b8c0c8;
-  border-radius: 6px;
-  box-shadow: 0 8px 20px rgba(15, 23, 30, 0.12);
+  background: ${({ theme }) => theme.color.surface};
+  border: 1px solid ${({ theme }) => theme.color.borderStrong};
+  border-radius: ${({ theme }) => theme.radius.sm};
+  box-shadow: 0 8px 20px ${({ theme }) => theme.color.focusShadow};
 `;
 
 const Option = styled.li<{ $active: boolean }>`
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   font-size: 0.92rem;
-  background: ${(p) => (p.$active ? "#e4edf7" : "transparent")};
-  color: #1f2933;
+  background: ${(p) => (p.$active ? p.theme.color.linkTint : "transparent")};
+  color: ${({ theme }) => theme.color.text};
 
   &:hover {
-    background: #e4edf7;
+    background: ${({ theme }) => theme.color.linkTint};
   }
 `;
 
