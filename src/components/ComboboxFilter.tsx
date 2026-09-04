@@ -184,6 +184,10 @@ export function ComboboxFilter({ label, options, value, onChange }: ComboboxFilt
         e.preventDefault();
         closeList();
         break;
+      case "Tab":
+        // must close synchronously; Safari otherwise keeps the popup up as focus leaves
+        closeList();
+        break;
       default:
         break;
     }
@@ -197,7 +201,11 @@ export function ComboboxFilter({ label, options, value, onChange }: ComboboxFilt
   }
 
   return (
-    <Wrapper>
+    <Wrapper
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) closeList();
+      }}
+    >
       <Label htmlFor={inputId}>{label}</Label>
       <InputRow>
         <Input
@@ -221,7 +229,6 @@ export function ComboboxFilter({ label, options, value, onChange }: ComboboxFilt
           }}
           onFocus={openList}
           onKeyDown={handleKeyDown}
-          onBlur={() => window.setTimeout(closeList, 100)}
         />
         {query && (
           <ClearButton type="button" onClick={handleClear} aria-label={`Clear ${label} filter`}>
