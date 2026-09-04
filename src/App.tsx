@@ -91,8 +91,7 @@ export default function App() {
           <Subtitle>
             A small accessible-by-default table and filter, built as a portfolio
             piece: React, TypeScript, and styled-components, with keyboard and
-            screen-reader support designed in from the start rather than
-            patched on afterward.
+            screen-reader support designed in from the start.
           </Subtitle>
         </Header>
 
