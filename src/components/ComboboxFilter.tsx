@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -114,11 +114,20 @@ export function ComboboxFilter({ label, options, value, onChange }: ComboboxFilt
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listboxRef = useRef<HTMLUListElement>(null);
 
   const baseId = useId();
   const inputId = `${baseId}-input`;
   const listboxId = `${baseId}-listbox`;
   const optionId = (index: number) => `${baseId}-option-${index}`;
+
+  // aria-activedescendant doesn't move DOM focus, so the browser won't scroll for us
+  useEffect(() => {
+    if (!open || activeIndex < 0) return;
+    listboxRef.current
+      ?.querySelector(`[id="${CSS.escape(optionId(activeIndex))}"]`)
+      ?.scrollIntoView({ block: "nearest" });
+  }, [open, activeIndex]);
 
   const filtered = options.filter((o) =>
     o.toLowerCase().includes(query.trim().toLowerCase())
@@ -222,7 +231,7 @@ export function ComboboxFilter({ label, options, value, onChange }: ComboboxFilt
       </InputRow>
 
       {open && filtered.length > 0 && (
-        <Listbox id={listboxId} role="listbox" aria-label={label}>
+        <Listbox id={listboxId} ref={listboxRef} role="listbox" aria-label={label}>
           {filtered.map((option, index) => (
             <Option
               key={option}
