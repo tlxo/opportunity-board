@@ -43,7 +43,6 @@ const Footer = styled.footer`
   color: ${({ theme }) => theme.color.textMuted};
   margin-top: 2rem;
   padding-top: 1.25rem;
-  max-width: 60ch;
 `;
 
 const FooterLink = styled.a`
