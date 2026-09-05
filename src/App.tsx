@@ -46,6 +46,17 @@ const Footer = styled.footer`
   max-width: 60ch;
 `;
 
+const FooterLink = styled.a`
+  color: ${({ theme }) => theme.color.link};
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+
+  &:hover,
+  &:focus-visible {
+    color: ${({ theme }) => theme.color.linkVisited};
+  }
+`;
+
 const detailPattern = /^\/opportunities\/([\w-]+)\/?$/;
 
 function matchDetailId(pathname: string): string | null {
@@ -108,7 +119,7 @@ export default function App() {
           This project currently covers a small accessible opportunity board: a
           filterable, sortable list, shareable URL state, detail pages for sample
           opportunities, keyboard row navigation, focus restoration, and live
-          status updates.
+          status updates. View the <FooterLink href="https://github.com/tlxo/opportunity-board" target="_blank" rel="noreferrer">GitHub repository</FooterLink>.
         </Footer>
       </Page>
 
