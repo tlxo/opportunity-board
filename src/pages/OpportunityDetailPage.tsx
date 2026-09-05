@@ -35,7 +35,7 @@ const Facts = styled.dl`
   }
 `;
 
-const SubHeading = styled.h3`
+const SubHeading = styled.h2`
   font-size: 1rem;
   margin: 0 0 0.5rem;
 `;
