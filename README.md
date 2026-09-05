@@ -1,13 +1,13 @@
 # Open Opportunities
 
-A small SPA built to demonstrate a specific combination: design sensibility, 
-frontend engineering, and accessibility that's built in instead of an 
-afterthought (or patched on after an audit, which is the least cost-effective option). 
+A small SPA built to demonstrate a specific combination: design sensibility,
+frontend engineering, and accessibility that's built in instead of an
+afterthought (or patched on after an audit, which is the least cost-effective option).
 
-The PSA consists of the kind of views I imagine a talent-matching or careers product 
-ships constantly: a filterable, sortable list of open opportunities paired with 
-individual pages for each sample opportunity, an extra dimension that forced me to 
-think about state saving. 
+The SPA consists of the kind of views I imagine a talent-matching or careers product
+ships constantly: a filterable, sortable list of open opportunities paired with
+individual pages for each sample opportunity, an extra dimension that forced me to
+think about state saving.
 
 **[Live demo](https://opportunity-board.netlify.app/)**
 
@@ -15,24 +15,25 @@ think about state saving.
 
 ## What it is
 
-Two 
-components carry the interesting work:
+Two components carry the interesting work:
 
-- **`ComboboxFilter`** — a combobox-with-list-autocomplete filter, built to
-  the [WAI-ARIA APG combobox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/):
-  full keyboard support (arrow keys, Home/End, Enter, Escape), `aria-expanded`
-  / `aria-controls` / `aria-activedescendant` wiring, and a visually-hidden
-  live region announcing result counts as you type.
+- **`ComboboxFilter`** — a native `<select>` tag filter with a clear button,
+  controlled React state, and the same visible focus treatment as the rest of
+  the app. The selected option is also reflected back to the DOM so accessibility
+  inspections see the current state on the native control.
 - **`OpportunityTable`** — a sortable table where sort state lives on
   `aria-sort` (not just a visual arrow icon), every column header is a real
   `<button>` so it's keyboard-operable without extra scripting, and a live
-  region announces what changed and how many results remain after every
-  sort or filter action.
+  region announces what changed and how many results remain after every sort.
+  Row links use roving focus so keyboard users can move through the table with
+  ArrowUp, ArrowDown, Home, and End without tabbing through every row.
 
 ## Stack
-- React, TypeScript, and styled-components.
-- Absolutely no UI kit, no headless-component library
-- Native HTML elements whenever possible
+
+- React 19, TypeScript 6, Vite 8, and styled-components 6.
+- `oxlint` for linting.
+- Absolutely no UI kit, no headless-component library.
+- Native HTML elements whenever possible.
 
 ## Accessibility approach
 
@@ -40,10 +41,10 @@ This project treats accessibility as part of the interaction model, not a final
 checklist. A few concrete choices matter here:
 
 - Full keyboard-only flow: every control is reachable without a mouse,
-  including the combobox, listbox options, sort buttons, and row links.
-- Screen-reader feedback: live regions announce sort changes and result counts so
-  state changes are not silent.
-- Focus management: skip links, heading focus on detail pages, and row focus
+  including the native tag filter, clear button, sort buttons, and row links.
+- Screen-reader feedback: live regions announce sort changes, result counts,
+  and page-name changes so state changes are not silent.
+- Focus management: the skip link, detail-page heading focus, and list-row focus
   restoration keep users oriented when moving through the app.
 - The table uses semantic HTML and ARIA state: real buttons, real links, real
   table semantics, and `aria-sort` on the active column.
@@ -52,7 +53,7 @@ checklist. A few concrete choices matter here:
 
 ## Built with AI assistance — and where I overrode it
 
-AI was useful for scaffolding the first pass of the combobox, table, and routing
+AI was useful for scaffolding the first pass of the tag filter, table, and routing
 patterns, and for getting the component structure in place quickly.
 
 Every accessibility decision after the fact was made by me deliberately. I did
@@ -82,11 +83,17 @@ keyboard navigation feel consistent rather than fragile.
   This matters to keyboard users because it preserves their place and reduces
   disorientation.
 
+- **Row navigation is keyboard-friendly without making every row a tab stop**
+  The table uses roving `tabIndex` for opportunity links. Tab enters the table at
+  the active row, then ArrowUp, ArrowDown, Home, and End move through the rows.
+  This keeps the page's tab order short while still making the table efficient to
+  scan without a mouse.
+
 - **Accessible interaction patterns were implemented intentionally**
-  The combobox and table follow real ARIA patterns: proper keyboard handling,
-  active-option tracking, `aria-live` announcements, visible focus states, and
-  semantic HTML. The goal was to make the app usable without a mouse and not just
-  look correct at a glance.
+  The tag filter now leans on the platform by using a native select, while the
+  table exposes custom behavior through semantic HTML, `aria-sort`, `aria-live`
+  announcements, visible focus states, and keyboard row navigation. The goal was
+  to make the app usable without a mouse and not just look correct at a glance.
 
 ## Design system foundations
 
@@ -116,6 +123,7 @@ of sync as the app grows.
 ```bash
 npm install
 npm run dev      # start the dev server
-npm run build    # type-check and produce a production build
+npm run lint     # run oxlint
+npm run build    # run tsc -b, then produce a production build
 npm run preview  # serve the production build locally
 ```
