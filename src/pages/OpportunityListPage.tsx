@@ -56,7 +56,7 @@ export function OpportunityListPage({
           value={tag}
           onChange={(next: string | null) => onListStateChange({ ...listState, tag: next })}
         />
-        <ResultCount>
+        <ResultCount role="status" aria-live="polite" aria-atomic="true">
           Showing {filtered.length} of {opportunities.length} opportunities
         </ResultCount>
       </Toolbar>
