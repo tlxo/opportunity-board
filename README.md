@@ -1,10 +1,10 @@
 # Open Opportunities
 
-A small SPA built to demonstrate a specific combination: design sensibility,
+A small Single-Page Application built to demonstrate a specific combination: design sensibility,
 frontend engineering, and accessibility that's built in instead of an
 afterthought (or patched on after an audit, which is the least cost-effective option).
 
-The SPA consists of the kind of views I imagine a talent-matching or careers product
+The app consists of the kind of views I imagine a talent-matching or careers product
 ships constantly: a filterable, sortable list of open opportunities paired with
 individual pages for each sample opportunity, an extra dimension that forced me to
 think about state saving.
