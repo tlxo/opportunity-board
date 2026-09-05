@@ -1,11 +1,9 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
-import { VisuallyHidden } from "./VisuallyHidden";
 import { Surface } from "./ui/Surface";
 
 const Wrapper = styled.div`
-  position: relative;
-  max-width: 320px;
+  max-width: 420px;
 `;
 
 const Label = styled.label`
@@ -16,9 +14,14 @@ const Label = styled.label`
   color: ${({ theme }) => theme.color.text};
 `;
 
-const InputRow = styled(Surface)`
+const ControlRow = styled.div`
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+`;
+
+const SelectShell = styled(Surface)`
+  flex: 1;
   border-color: ${({ theme }) => theme.color.borderStrong};
   border-radius: ${({ theme }) => theme.radius.sm};
 
@@ -29,19 +32,23 @@ const InputRow = styled(Surface)`
   }
 `;
 
-const Input = styled.input`
-  flex: 1;
+const Select = styled.select`
+  width: 100%;
   border: none;
-  padding: 0.55rem 0.6rem;
+  padding: 0.55rem 2rem 0.55rem 0.6rem;
   font-size: 0.95rem;
   border-radius: ${({ theme }) => theme.radius.sm};
   outline: none;
+  color: ${({ theme }) => theme.color.text};
+  background: ${({ theme }) => theme.color.surface};
 `;
 
 const ClearButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0 0.6rem;
+  align-self: stretch;
+  background: ${({ theme }) => theme.color.surface};
+  border: 1px solid ${({ theme }) => theme.color.borderStrong};
+  border-radius: ${({ theme }) => theme.radius.sm};
+  padding: 0 0.75rem;
   cursor: pointer;
   color: ${({ theme }) => theme.color.textMuted};
   font-size: 0.85rem;
@@ -52,35 +59,6 @@ const ClearButton = styled.button`
   }
 `;
 
-const Listbox = styled.ul`
-  position: absolute;
-  z-index: 10;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  max-height: 220px;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0.25rem 0;
-  list-style: none;
-  background: ${({ theme }) => theme.color.surface};
-  border: 1px solid ${({ theme }) => theme.color.borderStrong};
-  border-radius: ${({ theme }) => theme.radius.sm};
-  box-shadow: 0 8px 20px ${({ theme }) => theme.color.focusShadow};
-`;
-
-const Option = styled.li<{ $active: boolean }>`
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  font-size: 0.92rem;
-  background: ${(p) => (p.$active ? p.theme.color.linkTint : "transparent")};
-  color: ${({ theme }) => theme.color.text};
-
-  &:hover {
-    background: ${({ theme }) => theme.color.linkTint};
-  }
-`;
-
 interface ComboboxFilterProps {
   label: string;
   options: string[];
@@ -88,179 +66,45 @@ interface ComboboxFilterProps {
   onChange: (value: string | null) => void;
 }
 
-/**
- * Accessible combobox filter following the WAI-ARIA Authoring Practices
- * "Combobox with List Autocomplete" pattern:
- * https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
- *
- * - input has role="combobox" and aria-expanded/aria-controls/aria-activedescendant
- * - the popup list has role="listbox"
- * - options are announced via a visually-hidden live region as they change
- * - fully keyboard operable: ArrowUp/Down, Home/End, Enter, Escape
- */
 export function ComboboxFilter({ label, options, value, onChange }: ComboboxFilterProps) {
-  const [query, setQuery] = useState(value ?? "");
-  const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const listboxRef = useRef<HTMLUListElement>(null);
+  const selectId = useId();
+  const selectRef = useRef<HTMLSelectElement>(null);
 
-  const baseId = useId();
-  const inputId = `${baseId}-input`;
-  const listboxId = `${baseId}-listbox`;
-  const optionId = (index: number) => `${baseId}-option-${index}`;
+  useLayoutEffect(() => {
+    const selectedValue = value ?? "";
 
-  // Adopt a selection made elsewhere (e.g. restored from the URL) without
-  // overwriting a partially typed query, which arrives here as value === null.
-  useEffect(() => {
-    if (value !== null) setQuery(value);
-  }, [value]);
-
-  // aria-activedescendant doesn't move DOM focus, so the browser won't scroll for us
-  useEffect(() => {
-    if (!open || activeIndex < 0) return;
-    listboxRef.current
-      ?.querySelector(`[id="${CSS.escape(optionId(activeIndex))}"]`)
-      ?.scrollIntoView({ block: "nearest" });
-  }, [open, activeIndex]);
-
-  const filtered = options.filter((o) =>
-    o.toLowerCase().includes(query.trim().toLowerCase())
-  );
-
-  function openList() {
-    setOpen(true);
-    setActiveIndex(filtered.length > 0 ? 0 : -1);
-  }
-
-  function closeList() {
-    setOpen(false);
-    setActiveIndex(-1);
-  }
-
-  function selectOption(option: string) {
-    setQuery(option);
-    onChange(option);
-    closeList();
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!open && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
-      openList();
-      e.preventDefault();
-      return;
+    for (const option of selectRef.current?.options ?? []) {
+      option.toggleAttribute("selected", option.value === selectedValue);
     }
-    if (!open) return;
-
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setActiveIndex((i) => Math.min(i + 1, filtered.length - 1));
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        setActiveIndex((i) => Math.max(i - 1, 0));
-        break;
-      case "Home":
-        e.preventDefault();
-        setActiveIndex(0);
-        break;
-      case "End":
-        e.preventDefault();
-        setActiveIndex(filtered.length - 1);
-        break;
-      case "Enter":
-        e.preventDefault();
-        if (activeIndex >= 0 && filtered[activeIndex]) {
-          selectOption(filtered[activeIndex]);
-        }
-        break;
-      case "Escape":
-        e.preventDefault();
-        closeList();
-        break;
-      case "Tab":
-        // must close synchronously; Safari otherwise keeps the popup up as focus leaves
-        closeList();
-        break;
-      default:
-        break;
-    }
-  }
-
-  function handleClear() {
-    setQuery("");
-    onChange(null);
-    closeList();
-    inputRef.current?.focus();
-  }
+  }, [options, value]);
 
   return (
-    <Wrapper
-      onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) closeList();
-      }}
-    >
-      <Label htmlFor={inputId}>{label}</Label>
-      <InputRow>
-        <Input
-          id={inputId}
-          ref={inputRef}
-          type="text"
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={listboxId}
-          aria-autocomplete="list"
-          aria-activedescendant={
-            open && activeIndex >= 0 ? optionId(activeIndex) : undefined
-          }
-          autoComplete="off"
-          placeholder="e.g. React, WCAG, Remote"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            onChange(null);
-            openList();
-          }}
-          onFocus={openList}
-          onKeyDown={handleKeyDown}
-        />
-        {query && (
-          <ClearButton type="button" onClick={handleClear} aria-label={`Clear ${label} filter`}>
-            Clear
-          </ClearButton>
-        )}
-      </InputRow>
-
-      {open && filtered.length > 0 && (
-        <Listbox id={listboxId} ref={listboxRef} role="listbox" aria-label={label}>
-          {filtered.map((option, index) => (
-            <Option
-              key={option}
-              id={optionId(index)}
-              role="option"
-              aria-selected={index === activeIndex}
-              $active={index === activeIndex}
-              onMouseDown={(e) => {
-                // onMouseDown (not onClick) so it fires before the input's onBlur
-                e.preventDefault();
-                selectOption(option);
-              }}
-              onMouseEnter={() => setActiveIndex(index)}
-            >
-              {option}
-            </Option>
-          ))}
-        </Listbox>
-      )}
-
-      <VisuallyHidden role="status" aria-live="polite">
-        {open
-          ? filtered.length === 0
-            ? "No matching tags"
-            : `${filtered.length} matching tag${filtered.length === 1 ? "" : "s"} available`
-          : ""}
-      </VisuallyHidden>
+    <Wrapper>
+      <Label htmlFor={selectId}>{label}</Label>
+      <ControlRow>
+        <SelectShell>
+          <Select
+            id={selectId}
+            ref={selectRef}
+            value={value ?? ""}
+            onChange={(event) => onChange(event.target.value || null)}
+          >
+            <option value="" />
+            {options.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </Select>
+        </SelectShell>
+        <ClearButton
+          type="button"
+          onClick={() => onChange(null)}
+          aria-label="Clear tag filter"
+        >
+          Clear
+        </ClearButton>
+      </ControlRow>
     </Wrapper>
   );
 }
