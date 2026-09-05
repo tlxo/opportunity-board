@@ -71,11 +71,11 @@ keyboard navigation feel consistent rather than fragile.
   the app small while still supporting the browser back button, direct links to
   detail pages, and a natural SPA flow.
 
-- **Filter and sort state is synced to the URL**
-  The list state is serialized into the query string and parsed back on each load.
-  This makes filtered views bookmarkable and shareable, and it keeps the UI in a
-  predictable state even when a user reloads. Every value is validated against an
-  allowlist before it is used, which guards against bad or unexpected query params.
+- **Filter, sort, and list state is synced to the URL**
+  The list state is serialized into the query string and parsed back on load, so
+  filtered views can be bookmarked, shared, and restored after a reload. Query
+  params are validated against allowlisted values before they are used, which
+  keeps malformed or unexpected URLs from putting the UI into an invalid state.
 
 - **Focus is restored when moving between list and detail**
   When the user goes from the list into a detail page and then returns, focus is
