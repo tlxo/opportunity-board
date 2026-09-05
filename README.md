@@ -1,10 +1,13 @@
-# Open Opportunities — an accessible table & filter
+# Open Opportunities
 
-A small, self-contained UI piece built to demonstrate a specific combination:
-design sensibility, frontend engineering, and accessibility that's designed
-in from the start rather than patched on at the end. React, TypeScript, and 
-styled-components. No UI kit, no headless-component library. Every accessibility 
-decision below is one I made deliberately, not one a library made for me.
+A small SPA built to demonstrate a specific combination: design sensibility, 
+frontend engineering, and accessibility that's built in instead of an 
+afterthought (or patched on after an audit, which is the least cost-effective option). 
+
+The PSA consists of the kind of views I imagine a talent-matching or careers product 
+ships constantly: a filterable, sortable list of open opportunities paired with 
+individual pages for each sample opportunity, an extra dimension that forced me to 
+think about state saving. 
 
 **[Live demo](https://opportunity-board.netlify.app/)**
 
@@ -12,8 +15,7 @@ decision below is one I made deliberately, not one a library made for me.
 
 ## What it is
 
-A filterable, sortable list of open opportunities, which is the kind of screen 
-I would figure a talent-matching or careers product ships constantly. Two 
+Two 
 components carry the interesting work:
 
 - **`ComboboxFilter`** — a combobox-with-list-autocomplete filter, built to
@@ -26,6 +28,11 @@ components carry the interesting work:
   `<button>` so it's keyboard-operable without extra scripting, and a live
   region announces what changed and how many results remain after every
   sort or filter action.
+
+## Stack
+- React, TypeScript, and styled-components.
+- Absolutely no UI kit, no headless-component library
+- Native HTML elements whenever possible
 
 ## Accessibility approach
 
@@ -48,17 +55,8 @@ checklist. A few concrete choices matter here:
 AI was useful for scaffolding the first pass of the combobox, table, and routing
 patterns, and for getting the component structure in place quickly.
 
-First important override was semantic correctness. A naive version of this UI could
-have looked right but still been a poor keyboard or screen-reader experience. 
-
-After that I changed the interaction logic so:
-
-- the selected filter value and the typed query remain distinct,
-- the popup closes at the right time,
-- focus is restored after navigation,
-- and the URL state is validated instead of trusting raw query params.
-
-These make the real difference between “it renders” and “it behaves well for a user.”
+Every accessibility decision after the fact was made by me deliberately. I did
+not want to be limited to options a library would have been able to offer me.
 
 ## Significant changes along the way, and why they were needed
 
