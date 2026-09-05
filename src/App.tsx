@@ -88,7 +88,7 @@ export default function App() {
       <SkipLink href="#main">Skip to content</SkipLink>
       <Page>
         <Header>
-          <Title>Open Opportunities</Title>
+          <Title>{pageName}</Title>
         </Header>
 
         <main id="main">

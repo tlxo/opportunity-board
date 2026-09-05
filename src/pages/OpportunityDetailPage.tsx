@@ -3,24 +3,14 @@ import styled from "styled-components";
 import { opportunities } from "../data";
 import { FocusableLink } from "../components/ui/FocusableLink";
 import { Surface } from "../components/ui/Surface";
-import { focusRing } from "../theme";
 
 const BackLink = styled(FocusableLink)`
   display: inline-block;
-  margin-bottom: 1.25rem;
+  margin-top: 1.25rem;
 `;
 
 const Article = styled(Surface)`
   padding: 1.5rem;
-`;
-
-const Heading = styled.h2`
-  font-size: 1.35rem;
-  margin: 0 0 0.75rem;
-
-  &:focus-visible {
-    ${focusRing("4px")}
-  }
 `;
 
 const Lead = styled.p`
@@ -92,34 +82,28 @@ interface OpportunityDetailPageProps {
 
 export function OpportunityDetailPage({ id, backHref }: OpportunityDetailPageProps) {
   const opportunity = opportunities.find((o) => o.id === id);
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const articleRef = useRef<HTMLElement>(null);
 
   // Client-side navigation leaves focus on the activated link; move it into the new page.
   useEffect(() => {
-    headingRef.current?.focus();
+    articleRef.current?.focus();
   }, [id]);
 
   if (!opportunity) {
     return (
       <>
-        <BackLink to={backHref}>&larr; Back to all opportunities</BackLink>
-        <Article as="article">
-          <Heading ref={headingRef} tabIndex={-1}>
-            Opportunity not found
-          </Heading>
+        <Article as="article" ref={articleRef} tabIndex={-1}>
+          <Lead>Opportunity not found</Lead>
           <Lead>This opportunity may have been filled or removed.</Lead>
         </Article>
+        <BackLink to={backHref}>&larr; Back to all opportunities</BackLink>
       </>
     );
   }
 
   return (
     <>
-      <BackLink to={backHref}>&larr; Back to all opportunities</BackLink>
-      <Article as="article" aria-labelledby="opportunity-heading">
-        <Heading id="opportunity-heading" ref={headingRef} tabIndex={-1}>
-          {opportunity.title}
-        </Heading>
+      <Article as="article" ref={articleRef} tabIndex={-1}>
         <Lead>{opportunity.description}</Lead>
 
         <Facts>
@@ -155,6 +139,7 @@ export function OpportunityDetailPage({ id, backHref }: OpportunityDetailPagePro
           ))}
         </TagList>
       </Article>
+      <BackLink to={backHref}>&larr; Back to all opportunities</BackLink>
     </>
   );
 }

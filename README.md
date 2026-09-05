@@ -44,7 +44,7 @@ checklist. A few concrete choices matter here:
   including the native tag filter, clear button, sort buttons, and row links.
 - Screen-reader feedback: live regions announce sort changes, result counts,
   and page-name changes so state changes are not silent.
-- Focus management: the skip link, detail-page heading focus, and list-row focus
+- Focus management: the skip link, detail-page article focus, and list-row focus
   restoration keep users oriented when moving through the app.
 - The table uses semantic HTML and ARIA state: real buttons, real links, real
   table semantics, and `aria-sort` on the active column.
