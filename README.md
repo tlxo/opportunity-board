@@ -9,7 +9,7 @@ ships constantly: a filterable, sortable list of open opportunities paired with
 individual pages for each sample opportunity, an extra dimension that forced me to
 think about state saving.
 
-**[Live demo](https://opportunity-board.netlify.app/)**
+**[Live demo](https://opportunities.tlxo.fi/)**
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/24af0b4e-02f9-43a0-b64e-84f78c623cbd/deploy-status)](https://app.netlify.com/projects/opportunity-board/deploys)
 
@@ -51,52 +51,37 @@ checklist. A few concrete choices matter here:
 - Focus styles are consistently visible and contrasted against the background to
   remain obvious without being decorative.
 
-## Built with AI assistance — and where I overrode it
+## Built with AI, and the calls I made along the way
 
-AI was useful for scaffolding the first pass of the tag filter, table, and routing
-patterns, and for getting the component structure in place quickly.
+AI scaffolded the first pass of the combobox, the table, and the routing. Here's
+where I stepped in.
 
-Every accessibility decision after the fact was made by me deliberately. I did
-not want to be limited to options a library would have been able to offer me.
+**Replaced the combobox with a native `<select>`.** The first version was a
+hand-built combobox following the WAI-ARIA APG pattern — `aria-expanded`,
+`aria-activedescendant`, all of it. It looked correct in an ARIA inspector, but
+testing showed it behaved inconsistently across real screen reader and browser
+combinations, which is a known failure mode for custom comboboxes. A native
+`<select>` has no custom keyboard handling to get wrong, and every browser and
+screen reader already supports it.
 
-## Significant changes along the way, and why they were needed
+**Fixed a keyboard-reachability bug in Safari.** The Clear button wasn't
+tabbable there. Chrome testing alone wouldn't have caught it.
 
-Improvements focused on the practical product problems that matter most in a
-real filtered table: preserving context, keeping state shareable, and making
-keyboard navigation feel consistent rather than fragile.
+**Moved the result-count announcement.** It lived in the filter component;
+screen reader users need it announced with the results, not the control that
+triggered them. It now sits with `ResultCount`.
 
-- **Custom client-side routing**
-  The app uses a lightweight router built on `useSyncExternalStore` and the
-  browser history APIs instead of pulling in a large routing library. This keeps
-  the app small while still supporting the browser back button, direct links to
-  detail pages, and a natural SPA flow.
+**Routing, URL state, and focus were deliberate builds, not left as
+scaffolding.** A router on `useSyncExternalStore` instead of a routing library.
+Filter and sort state serialized to the URL, with every value checked against
+an allowlist before use — query params are attacker-controlled input. Focus
+moves to the detail page on navigation and back to the exact row on return.
 
-- **Filter, sort, and list state is synced to the URL**
-  The list state is serialized into the query string and parsed back on load, so
-  filtered views can be bookmarked, shared, and restored after a reload. Query
-  params are validated against allowlisted values before they are used, which
-  keeps malformed or unexpected URLs from putting the UI into an invalid state.
-
-- **Focus is restored when moving between list and detail**
-  When the user goes from the list into a detail page and then returns, focus is
-  restored to the row they came from rather than dropping to the top of the page.
-  This matters to keyboard users because it preserves their place and reduces
-  disorientation.
-
-- **Row navigation is keyboard-friendly without making every row a tab stop**
-  The table uses roving `tabIndex` for opportunity links. Tab enters the table at
-  the active row, then ArrowUp, ArrowDown, Home, and End move through the rows.
-  ArrowDown from any sort header moves directly into the first result, and
-  ArrowUp from that first row returns to the header that initiated the move.
-  The ordinary Tab sequence still reaches every header control.
-  This keeps the page's tab order short while still making the table efficient to
-  scan without a mouse.
-
-- **Accessible interaction patterns were implemented intentionally**
-  The tag filter now leans on the platform by using a native select, while the
-  table exposes custom behavior through semantic HTML, `aria-sort`, `aria-live`
-  announcements, visible focus states, and keyboard row navigation. The goal was
-  to make the app usable without a mouse and not just look correct at a glance.
+**Kept roving-tabindex row navigation without `role="grid"`, after a reviewer
+flagged it.** Grid semantics fit two-dimensional navigation; this table has one
+interactive element per row, so grid roles would add row/column announcements
+with no real columns to navigate. Tested it to confirm rather than reasoning it
+out abstractly, then decided against the change.
 
 ## Design system foundations
 
