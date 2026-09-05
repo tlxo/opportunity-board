@@ -36,12 +36,13 @@ const Header = styled.header`
 
 const Title = styled.h1`
   font-size: 1.6rem;
-  margin: 0 0 0.4rem;
+  margin: 0;
 `;
 
-const Subtitle = styled.p`
+const Footer = styled.footer`
   color: ${({ theme }) => theme.color.textMuted};
-  margin: 0;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
   max-width: 60ch;
 `;
 
@@ -88,11 +89,6 @@ export default function App() {
       <Page>
         <Header>
           <Title>Open Opportunities</Title>
-          <Subtitle>
-            A small accessible-by-default table and filter, built as a portfolio
-            piece: React, TypeScript, and styled-components, with keyboard and
-            screen-reader support designed in from the start.
-          </Subtitle>
         </Header>
 
         <main id="main">
@@ -107,6 +103,13 @@ export default function App() {
             />
           )}
         </main>
+
+        <Footer>
+          This project currently covers a small accessible opportunity board: a
+          filterable, sortable list, shareable URL state, detail pages for sample
+          opportunities, keyboard row navigation, focus restoration, and live
+          status updates.
+        </Footer>
       </Page>
 
       <VisuallyHidden role="status" aria-live="polite">
