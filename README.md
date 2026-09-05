@@ -86,6 +86,9 @@ keyboard navigation feel consistent rather than fragile.
 - **Row navigation is keyboard-friendly without making every row a tab stop**
   The table uses roving `tabIndex` for opportunity links. Tab enters the table at
   the active row, then ArrowUp, ArrowDown, Home, and End move through the rows.
+  ArrowDown from any sort header moves directly into the first result, and
+  ArrowUp from that first row returns to the header that initiated the move.
+  The ordinary Tab sequence still reaches every header control.
   This keeps the page's tab order short while still making the table efficient to
   scan without a mouse.
 

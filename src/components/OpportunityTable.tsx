@@ -159,6 +159,8 @@ export function OpportunityTable({
 }: OpportunityTableProps) {
   const [activeRow, setActiveRow] = useState(0);
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const headerButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const headerIndexRef = useRef(0);
   linkRefs.current.length = opportunities.length;
 
   function handleSort(key: SortKey) {
@@ -176,6 +178,14 @@ export function OpportunityTable({
     const clamped = Math.max(0, Math.min(opportunities.length - 1, index));
     setActiveRow(clamped);
     linkRefs.current[clamped]?.focus();
+  }
+
+  function handleHeaderKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (event.key !== "ArrowDown" || opportunities.length === 0) return;
+
+    event.preventDefault();
+    headerIndexRef.current = index;
+    focusRow(0);
   }
 
   useEffect(() => {
@@ -196,7 +206,11 @@ export function OpportunityTable({
         break;
       case "ArrowUp":
         event.preventDefault();
-        focusRow(index - 1);
+        if (index === 0) {
+          headerButtonRefs.current[headerIndexRef.current]?.focus();
+        } else {
+          focusRow(index - 1);
+        }
         break;
       case "Home":
         event.preventDefault();
@@ -225,12 +239,19 @@ export function OpportunityTable({
         </VisuallyHiddenCaption>
         <thead>
           <tr>
-            {columns.map((col) => {
+            {columns.map((col, index) => {
               const isActive = sort.key === col.key;
               const ariaSort = isActive ? sort.direction : "none";
               return (
                 <Th key={col.key} scope="col" aria-sort={ariaSort}>
-                  <SortButton type="button" onClick={() => handleSort(col.key)}>
+                  <SortButton
+                    ref={(el: HTMLButtonElement | null) => {
+                      headerButtonRefs.current[index] = el;
+                    }}
+                    type="button"
+                    onClick={() => handleSort(col.key)}
+                    onKeyDown={(event) => handleHeaderKeyDown(event, index)}
+                  >
                     {col.label}
                     <SortIcon aria-hidden="true">
                       {isActive ? (sort.direction === "ascending" ? "▲" : "▼") : "↕"}
