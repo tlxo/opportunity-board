@@ -7,6 +7,10 @@ export const FocusableLink = styled(Link)`
   color: ${({ theme }) => theme.color.link};
   text-decoration: underline;
 
+  &:visited {
+    color: ${({ theme }) => theme.color.linkVisited};
+  }
+
   &:focus-visible {
     ${focusRing()}
     border-radius: 3px;

@@ -4,6 +4,7 @@ export const theme = {
     textMuted: "#52606d",
     textSubtle: "#3e4c59",
     link: "#1a5fb4",
+    linkVisited: "#6b3fa0",
     linkTint: "#e4edf7",
     border: "#d3dae0",
     borderStrong: "#b8c0c8",
