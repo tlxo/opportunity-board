@@ -3,7 +3,7 @@ import { VisuallyHidden } from "../VisuallyHidden";
 
 type NewTabLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "target" | "rel">;
 
-// Every external link is a context change (WCAG 3.2.5): flag it visually and for assistive tech.
+// Every new-tab link is a context change (WCAG 3.2.5): flag it visually and for assistive tech.
 export function NewTabLink({ children, ...props }: NewTabLinkProps) {
   return (
     <a {...props} target="_blank" rel="noopener noreferrer">
