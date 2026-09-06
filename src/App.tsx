@@ -4,6 +4,7 @@ import { opportunities } from "./data";
 import { parseListState, serializeListState, type ListState } from "./listState";
 import { navigate, useLocation } from "./router";
 import { VisuallyHidden } from "./components/VisuallyHidden";
+import { NewTabLink } from "./components/ui/NewTabLink";
 import { OpportunityListPage } from "./pages/OpportunityListPage";
 import { OpportunityDetailPage } from "./pages/OpportunityDetailPage";
 
@@ -45,7 +46,7 @@ const Footer = styled.footer`
   padding-top: 1.25rem;
 `;
 
-const FooterLink = styled.a`
+const FooterLink = styled(NewTabLink)`
   color: ${({ theme }) => theme.color.link};
   text-decoration: underline;
   text-underline-offset: 0.15em;
@@ -118,7 +119,7 @@ export default function App() {
           This project currently covers a small accessible opportunity board: a
           filterable, sortable list, shareable URL state, detail pages for sample
           opportunities, keyboard row navigation, focus restoration, and live
-          status updates. View the <FooterLink href="https://github.com/tlxo/opportunity-board" target="_blank" rel="noreferrer">GitHub repository</FooterLink>.
+          status updates. View the <FooterLink href="https://github.com/tlxo/opportunity-board">GitHub repository</FooterLink>.
         </Footer>
       </Page>
 
