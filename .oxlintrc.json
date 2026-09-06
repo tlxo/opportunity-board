@@ -1,0 +1,6 @@
+{
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "react"],
+  "rules": {
+    "react/jsx-no-target-blank": "error"
+  }
+}

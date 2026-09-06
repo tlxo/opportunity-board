@@ -50,6 +50,11 @@ checklist. A few concrete choices matter here:
   table semantics, and `aria-sort` on the active column.
 - Focus styles are consistently visible and contrasted against the background to
   remain obvious without being decorative.
+- Links that open in a new tab are marked as such, both visually and for
+  assistive tech (WCAG 3.2.5): `ExternalLink` bundles `target="_blank"`,
+  `rel="noopener noreferrer"`, an `aria-hidden` icon, and visually-hidden
+  "(opens in new tab)" text into one component, so the indicator isn't left to
+  be added by hand at each call site.
 
 ## Built with AI, and the calls I made along the way
 
@@ -100,7 +105,8 @@ from one-off literals into a small shared design system:
   extract patterns that were being redefined per-file (a link with the app's
   focus-ring treatment, a bordered/rounded card container). Feature components
   like `TitleLink` and `Article` now compose from these rather than duplicating
-  the CSS.
+  the CSS. `ExternalLink` does the same for the new-tab indicator described
+  above, so it can be styled with `styled(ExternalLink)` like any other link.
 
 This isn't about accessibility itself, it's about making the accessible styling
 choices (contrast, focus-ring shape/offset) impossible to accidentally drift out
