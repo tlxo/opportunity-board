@@ -4,7 +4,7 @@ import { opportunities } from "./data";
 import { parseListState, serializeListState, type ListState } from "./listState";
 import { navigate, useLocation } from "./router";
 import { VisuallyHidden } from "./components/VisuallyHidden";
-import { ExternalLink } from "./components/ui/ExternalLink";
+import { NewTabLink } from "./components/ui/NewTabLink";
 import { OpportunityListPage } from "./pages/OpportunityListPage";
 import { OpportunityDetailPage } from "./pages/OpportunityDetailPage";
 
@@ -46,7 +46,7 @@ const Footer = styled.footer`
   padding-top: 1.25rem;
 `;
 
-const FooterLink = styled(ExternalLink)`
+const FooterLink = styled(NewTabLink)`
   color: ${({ theme }) => theme.color.link};
   text-decoration: underline;
   text-underline-offset: 0.15em;

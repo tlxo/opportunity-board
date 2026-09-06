@@ -1,10 +1,10 @@
 import type { AnchorHTMLAttributes } from "react";
 import { VisuallyHidden } from "../VisuallyHidden";
 
-type ExternalLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "target" | "rel">;
+type NewTabLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "target" | "rel">;
 
 // Every external link is a context change (WCAG 3.2.5): flag it visually and for assistive tech.
-export function ExternalLink({ children, ...props }: ExternalLinkProps) {
+export function NewTabLink({ children, ...props }: NewTabLinkProps) {
   return (
     <a {...props} target="_blank" rel="noopener noreferrer">
       {children}
